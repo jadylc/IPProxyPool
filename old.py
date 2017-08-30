@@ -4,6 +4,8 @@ import time
 import urllib.request
 from bs4 import BeautifulSoup
 
+from db.DataStore import sqlhelper
+
 a = 'https://btso.pw/search/'
 list_initial = []
 list_R = []
@@ -15,7 +17,7 @@ list_magnet = []
 
 
 def get_code():
-    f = open("C:\\Users\Jady\Desktop\pyin.txt")
+    f = open("E:\\Workspace\IPProxyPool\pyin.txt")
     for line in f:
         line = line.rstrip( )
         line = re.sub('-', ' ', line)
@@ -88,7 +90,7 @@ def get_not_found_magnet(a):
 
 
 def writein(x,y):
-    f1 = open("C:\\Users\Jady\Desktop\pyout.txt",'a+')
+    f1 = open("E:\\Workspace\IPProxyPool\pyout.txt",'a+')
     f1.write('\n' + y + '\n')
     for i in x:
         f1.write(i + '\n')
@@ -96,6 +98,10 @@ def writein(x,y):
 
 
 if __name__ == '__main__':
-
+    # proxy_list = sqlhelper.select()
+    # proxies = []
+    # for i in proxy_list:
+    #     proxies.append("http://" + i[0] + ":" + str(i[1]))
+    # print(proxies)
     get_code()
     get_not_found_magnet(get_no_ch_magnet(get_ch_magnet()))
