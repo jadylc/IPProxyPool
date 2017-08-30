@@ -115,6 +115,7 @@ if __name__ == '__main__':
     code_notfind_final = []
     list_magnet = []
     list_magnet_ch = []
+    start_time = time.time()
     proxy_list = sqlhelper.select(10)
     pool = threadpool.ThreadPool(10)
     reqs = threadpool.makeRequests(search_magnet, get_code())
@@ -123,7 +124,15 @@ if __name__ == '__main__':
     reqs2 = threadpool.makeRequests(search_magnet2, code_notfind)
     [pool.putRequest(req) for req in reqs2]
     pool.wait()
-    print(code_notfind)
-    print(code_notfind_final)
-    print(list_magnet)
-    print(list_magnet_ch)
+
+    f1 = open("E:\\Workspace\IPProxyPool\pyout.txt",'w+')
+    f1.write('找到中文字幕'+'\n')
+    for i in list_magnet_ch:
+        f1.write(i+'\n')
+    f1.write('\n' + '找到无字幕' + '\n')
+    for i in list_magnet:
+        f1.write(i+'\n')
+    f1.write('\n' + '未找到' + '\n')
+    for i in code_notfind_final:
+        f1.write(i+'\n')
+    f1.close()
