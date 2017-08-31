@@ -182,8 +182,19 @@ def get_header():
         'Accept-Language': 'en-US,en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
         'Connection': 'keep-alive',
         'Accept-Encoding': 'gzip, deflate',
+    }
+
+def get_header2():
+    return {
+        'User-Agent': random.choice(USER_AGENTS),
+        'Accept': 'application/json,text/javascript,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
+        'Connection': 'keep-alive',
+        'Accept-Encoding': 'gzip, deflate',
         'host': 'btso.pw',
     }
+
+
 #默认给抓取的ip分配20分,每次连接失败,减一分,直到分数全部扣完从数据库中删除
 DEFAULT_SCORE=10
 

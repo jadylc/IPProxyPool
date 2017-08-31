@@ -38,9 +38,9 @@ target_url = 'https://btso.pw/search/'
 def search_magnet(code):
     socket.setdefaulttimeout(3)
     url = target_url+code+'R'
-    res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
+    res = requests.get(url, headers=config.get_header2(), proxies=get_proxies_random(proxies_pool))
     if res.status_code != 200:
-        res1 = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
+        res1 = requests.get(url, headers=config.get_header2(), proxies=get_proxies_random(proxies_pool))
         if res1.status_code != 200:
             logging.error('connect refused')
     else:
@@ -50,9 +50,9 @@ def search_magnet(code):
 def search_magnet2(code):
     socket.setdefaulttimeout(3)
     url2 = target_url + code
-    res = requests.get(url2, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
+    res = requests.get(url2, headers=config.get_header2(), proxies=get_proxies_random(proxies_pool))
     if res.status_code != 200:
-        res1 = requests.get(url2, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
+        res1 = requests.get(url2, headers=config.get_header2(), proxies=get_proxies_random(proxies_pool))
         if res1.status_code != 200:
             logging.error('connect refused')
     else:
@@ -76,11 +76,11 @@ def prase2(code,res):
 
 
 def get_detail(url):
-    res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool)).content
+    res = requests.get(url, headers=config.get_header2(), proxies=get_proxies_random(proxies_pool)).content
     if res is None:
-        res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool)).content
+        res = requests.get(url, headers=config.get_header2(), proxies=get_proxies_random(proxies_pool)).content
         if res is None:
-            res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool)).content
+            res = requests.get(url, headers=config.get_header2(), proxies=get_proxies_random(proxies_pool)).content
             if res is None:
                 print('get_detail error')
             else:

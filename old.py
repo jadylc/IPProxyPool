@@ -1,4 +1,5 @@
 # coding:UTF-8
+import queue
 import re
 import time
 import urllib.request
@@ -98,10 +99,6 @@ def writein(x,y):
 
 
 if __name__ == '__main__':
-    # proxy_list = sqlhelper.select()
-    # proxies = []
-    # for i in proxy_list:
-    #     proxies.append("http://" + i[0] + ":" + str(i[1]))
-    # print(proxies)
+
     get_code()
     get_not_found_magnet(get_no_ch_magnet(get_ch_magnet()))
