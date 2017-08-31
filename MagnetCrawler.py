@@ -1,18 +1,14 @@
 # coding:UTF-8
 import re
 import socket
-import threading
-import time
-import urllib.request
 import logging
 from random import choice
-
 import requests
 from bs4 import BeautifulSoup
 import threadpool
-
 import config
 from db.DataStore import sqlhelper
+import queue
 
 
 
@@ -30,18 +26,10 @@ def get_code():
     return list_code
 
 
-def get_proxies(s, proxy_list):
-    proxies = []
-    for i in proxy_list:
-        proxies.append("http://" + i[0] + ":" + str(i[1]))
-    proxy = {"http": proxies[s % len(proxies)]}
-    return proxy
 
-def get_proxies_random(proxy_list):
-    proxies = []
-    for i in proxy_list:
-        proxies.append("http://" + i[0] + ":" + str(i[1]))
-    proxy = {"http": choice(proxies)}
+def get_proxies_random(proxies_pool):
+    proxy = {"http": proxies_pool.get()}
+    proxies_pool.put(proxy)
     return proxy
 
 
@@ -50,9 +38,9 @@ target_url = 'https://btso.pw/search/'
 def search_magnet(code):
     socket.setdefaulttimeout(3)
     url = target_url+code+'R'
-    res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxy_list))
+    res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
     if res.status_code != 200:
-        res1 = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxy_list))
+        res1 = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
         if res1.status_code != 200:
             logging.error('connect refused')
     else:
@@ -62,9 +50,9 @@ def search_magnet(code):
 def search_magnet2(code):
     socket.setdefaulttimeout(3)
     url2 = target_url + code
-    res = requests.get(url2, headers=config.get_header(), proxies=get_proxies_random(proxy_list))
+    res = requests.get(url2, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
     if res.status_code != 200:
-        res1 = requests.get(url2, headers=config.get_header(), proxies=get_proxies_random(proxy_list))
+        res1 = requests.get(url2, headers=config.get_header(), proxies=get_proxies_random(proxies_pool))
         if res1.status_code != 200:
             logging.error('connect refused')
     else:
@@ -88,11 +76,11 @@ def prase2(code,res):
 
 
 def get_detail(url):
-    res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxy_list)).content
+    res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool)).content
     if res is None:
-        res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxy_list)).content
+        res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool)).content
         if res is None:
-            res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxy_list)).content
+            res = requests.get(url, headers=config.get_header(), proxies=get_proxies_random(proxies_pool)).content
             if res is None:
                 print('get_detail error')
             else:
@@ -115,8 +103,10 @@ if __name__ == '__main__':
     code_notfind_final = []
     list_magnet = []
     list_magnet_ch = []
-    start_time = time.time()
-    proxy_list = sqlhelper.select(10)
+    proxy_list = sqlhelper.select(150)
+    proxies_pool = queue.Queue()
+    for i in proxy_list:
+        proxies_pool.put("http://" + i[0] + ":" + str(i[1]))
     pool = threadpool.ThreadPool(10)
     reqs = threadpool.makeRequests(search_magnet, get_code())
     [pool.putRequest(req) for req in reqs]
@@ -124,7 +114,6 @@ if __name__ == '__main__':
     reqs2 = threadpool.makeRequests(search_magnet2, code_notfind)
     [pool.putRequest(req) for req in reqs2]
     pool.wait()
-
     f1 = open("E:\\Workspace\IPProxyPool\pyout.txt",'w+')
     f1.write('找到中文字幕'+'\n')
     for i in list_magnet_ch:
