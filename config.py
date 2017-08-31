@@ -123,7 +123,7 @@ API_PORT = 8000
 不需要检测ip是否已经存在，因为会定时清理
 '''
 UPDATE_TIME = 30 * 60  # 每半个小时检测一次是否有代理ip失效
-MINNUM = 50  # 当有效的ip值小于一个时 需要启动爬虫进行爬取
+MINNUM = 150  # 当有效的ip值小于一个时 需要启动爬虫进行爬取
 
 TIMEOUT = 5  # socket延时
 '''
@@ -178,10 +178,11 @@ USER_AGENTS = [
 def get_header():
     return {
         'User-Agent': random.choice(USER_AGENTS),
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept': 'application/json,text/javascript,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
         'Connection': 'keep-alive',
         'Accept-Encoding': 'gzip, deflate',
+        'host': 'btso.pw',
     }
 #默认给抓取的ip分配20分,每次连接失败,减一分,直到分数全部扣完从数据库中删除
 DEFAULT_SCORE=10
